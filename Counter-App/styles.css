@@ -1,23 +1,60 @@
-.container {
+/* Global styles */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Counter App */
+#counter-app #counter-title {
+    font-size: 3.6rem;
     text-align: center;
-    font-size: 2rem;
-    font-family: Roboto, sans-serif;
+    margin-bottom: 32px;
 }
-  
-#value {
-    font-size: 6rem;
+
+#counter-app #counter-number {
+    font-size: 3rem;
     font-weight: bold;
+    text-align: center;
+    margin-bottom: 16px;
 }
-  
-.btn {
-    background: transparent;
-    padding: 8px 16px;
-    border-radius: 5px;
-    margin: 0.5rem;
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.button-group .btn {
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: 8px 20px;
+    font-size: 1.2rem;
     cursor: pointer;
+    background-color: white;
 }
-  
-.btn:hover {
-    background: rgba(0, 0, 0, 0.3);
+
+.button-group .btn:hover {
     color: #fff;
+    border: transparent;
+}
+
+.decrease-btn:hover {
+    background-color: #d74742;
+}
+
+.increase-btn:hover {
+    background-color: #3ccf63; 
+}
+
+.reset-btn:hover {
+    background-color: #bdbdbd;
 }
