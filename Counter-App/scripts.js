@@ -1,31 +1,31 @@
-const value = document.querySelector("#value");
-const btnDecrease = document.querySelector(".btn-decrease");
-const btnIncrease = document.querySelector(".btn-increase");
-const btnReset = document.querySelector(".btn-reset");
-let count = 0;
+const decreaseBtn = document.querySelector(".decrease-btn");
+const increaseBtn = document.querySelector(".increase-btn");
+const resetBtn = document.querySelector(".reset-btn");
+const counterValue = document.querySelector("#counter-number");
 
-function updateTextColor() {
-  value.textContent = `${count}`;
-  if (count < 0) {
-    value.style.color = "red";
-  } else if (count > 0) {
-    value.style.color = "green";
+let counter = 0;
+decreaseBtn.addEventListener("click", () => {
+  counter -= 1;
+  updateText();
+});
+
+increaseBtn.addEventListener("click", () => {
+  counter += 1;
+  updateText();
+});
+
+resetBtn.addEventListener("click", () => {
+  counter = 0;
+  updateText();
+});
+
+function updateText() {
+  counterValue.textContent = `${counter}`;
+  if (counter < 0) {
+    counterValue.style.color = "#d74742";
+  } else if (counter > 0) {
+    counterValue.style.color = "#3ccf63";
   } else {
-    value.style.color = "black";
+    counterValue.style.color = "#000000";
   }
 }
-
-btnDecrease.addEventListener("click", () => {
-  count -= 1;
-  updateTextColor();
-});
-
-btnIncrease.addEventListener("click", () => {
-  count += 1;
-  updateTextColor();
-});
-
-btnReset.addEventListener("click", () => {
-  count = 0;
-  updateTextColor();
-});
