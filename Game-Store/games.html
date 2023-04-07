@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+    <script src="https://kit.fontawesome.com/c8053af41d.js" crossorigin="anonymous"></script>
+    <title>One Store | Online Game Store</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Your Games</h1>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="./games.html">Games</a></li>
+                    <li><a href="#">About Us</a></li>
+                </ul>
+            </nav>
+            <div class="header-social-icons">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <input class="search-bar" type="text" placeholder="Search for your game">
+
+            <div id="filter-categories">
+                <h2>All Games</h2>
+                <div class="catogories-group">
+                    <div class="category">
+                        <input type="checkbox" id="genre1" name="genre1" value="RPG">
+                        <label for="genre1">RPG</label>
+                    </div>
+                    <div class="category">
+                        <input type="checkbox" id="genre2" name="genre2" value="Action">
+                        <label for="genre2">Action</label>
+                    </div>
+                    <div class="category">
+                        <input type="checkbox" id="genre3" name="genre3" value="FPS">
+                        <label for="genre3">FPS</label>
+                    </div>
+                    <div class="category">
+                        <input type="checkbox" id="genre4" name="genre4" value="RTS">
+                        <label for="genre4">RTS</label>
+                    </div>
+                </div>
+
+                <button>Search</button>
+            </div>
+
+            <section id="search-results">
+                <h2>Search Results</h2>
+                <div class="bottom-underline"></div>
+
+                <div class="cards search-results-cards">
+                    <div class="card search-results-card">
+                        <div class="card-header search-results-header">
+                            <img src="./images/wasteland3.jpg" alt="Wasteland 3">
+                        </div>
+        
+                        <div class="card-body search-results-body">
+                            <h3>Wasteland 3</h3>
+                            <div class="price-and-button">
+                                <p>$8.49</p>
+                                <button class="add-to-cart-btn">Add to cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="previous-btn">Previous</button>
+                    <button class="next-btn">Next</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <h2>Contact Us</h2>
+        <p class="footer-email">Email: dvmp1014@gmail.com</p>
+
+        <div class="footer-social-icons">
+            <i class="fa-brands fa-facebook"></i>
+            <i class="fa-brands fa-instagram"></i>
+            <i class="fa-brands fa-twitch"></i>
+        </div>
+
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Games</a></li>
+            <li><a href="#">About Us</a></li>
+        </ul>
+    </footer>
+</body>
+</html>
