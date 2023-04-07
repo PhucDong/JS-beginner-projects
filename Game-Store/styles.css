@@ -155,7 +155,8 @@ ul li a {
 }
 
 .card {
-    width: 182px;
+    width: 174px;
+    flex-grow: 1;
     color: var(--main-text-color);
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 6px;
 }
@@ -630,5 +631,12 @@ footer ul a {
         height: 44px;
         font-size: 1.2rem;
         padding: 8px 12px;
+    }
+} 
+
+@media only screen and (min-width: 1420px) {
+    .card {
+        flex-grow: 1;
+        width: 280px;
     }
 } 
