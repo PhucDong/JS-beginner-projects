@@ -59,14 +59,20 @@ header .container {
     height: 100%;
 }
 
-header .container nav {
+.header-navbar {
     position: absolute;
     top: 50px;
     left: 0;
     width: 100%;
     text-align: center;
-    background-color: var(--main-background-color);
     display: none;
+    z-index: 2;
+}
+
+.header-navbar-appear {
+    display: block;
+    background-color: #fff;
+    box-shadow: 0px 1px 10px #bdbdbd;
 }
 
 header .container h1 {
@@ -86,7 +92,7 @@ nav ul li {
 }
 
 ul li a {
-    color: var(--second-text-color);
+    color: var(--main-text-color);
 }
 
 /* Hero section */
@@ -151,14 +157,17 @@ ul li a {
     display: flex;
     flex-wrap: wrap;
     align-items: stretch;
-    gap: 10px;
 }
 
 .card {
-    width: 174px;
-    flex-grow: 1;
+    width: 50%;
+    padding: 4px;
     color: var(--main-text-color);
+}
+
+.card-content {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 6px;
+    height: 100%;
 }
 
 .card-header img {
@@ -168,12 +177,17 @@ ul li a {
 }
 
 .card-body {
-    padding: 8px;
+    margin: 8px;
     word-wrap: break-word;
+    height: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .card-body h3 {
     font-size: 12px;
+    height: max-content;
 }
 
 .price-and-button {
@@ -216,21 +230,25 @@ ul li a {
     margin-top: 34px;
 }
 
-.categories-list {
-    margin-top: 11px;
-    margin-bottom: 3px;
+.game-categories-cards {
+    height: 360px;
+}
+
+.category-card {
+    width: 33.33%;
+    height: 33.33%;
+}
+
+.category-card .card-content {
     display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 14px;
+    padding: 12px;
+    text-align: center;
 }
 
-.categories-list li a {
-    color: var(--third-text-color);
-    font-size: 12px;
-}
-
-.categories-list li a.highlight {
-    font-weight: bold;
+.category-card h3 {
+    font-size: 0.9rem;
 }
 
 /* Games Page */
@@ -324,12 +342,18 @@ footer ul a {
         font-size: 1.5rem;
     }
 
-    header .container nav {
+    header .header-navbar {
         display: block;
         position: static;
+        background-color: var(--main-background-color);
+        box-shadow: none;
         width: 50%;
     }
     
+    ul li a {
+        color: var(--second-text-color);
+    }
+
     header nav ul {
         display: flex;
         gap: 32px;
@@ -374,15 +398,14 @@ footer ul a {
     .bottom-underline {
         margin-bottom: 18px;
     }
-    
+
     .card {
-        flex-grow: 1;
-        width: 166px;
+        width: 25%;
     }
     
     .card-body {
-        padding: 12px;
-        word-wrap: break-word;
+        margin: 12px;
+        height: 80px;
     }
     
     .card-body h3 {
@@ -402,6 +425,15 @@ footer ul a {
         padding: 6px 10px;
     }
     
+    .game-categories-cards {
+        height: 288px;
+    }
+    
+    .category-card {
+        width: 20%;
+        height: 50%;
+    }
+
     .button-group {
         margin-top: 22px;
     }
@@ -413,10 +445,6 @@ footer ul a {
 
     #game-categories {
         margin-top: 45px;
-    }
-    
-    .categories-list li a {
-        font-size: 14px;
     }
 
     /* Footer */
@@ -501,8 +529,12 @@ footer ul a {
     }
     
     .card {
-        flex-grow: 1;
-        width: 196px;
+        padding: 6px;
+    }
+    
+    .card-body {
+        margin: 16px;
+        height: 100px;
     }
     
     .card-body h3 {
@@ -521,7 +553,15 @@ footer ul a {
         font-size: 14px;
         padding: 6px 12px;
     }
-    
+
+    .game-categories-cards {
+        height: 328px;
+    }
+
+    .category-card h3 {
+        font-size: 1.2rem;
+    }
+
     .button-group {
         margin-top: 36px;
     }
@@ -535,10 +575,6 @@ footer ul a {
 
     #game-categories {
         margin-top: 80px;
-    }
-    
-    .categories-list li a {
-        font-size: 18px;
     }
 
     /* Footer */
@@ -582,27 +618,10 @@ footer ul a {
     .bottom-underline {
         height: 3px;
     }
-
-    .categories-list {
-        margin-top: 14px;
-        gap: 20px;
-    }
-
-    .categories-list li a {
-        font-size: 20px;
-    }
-
-    .cards {
-        gap: 12px;
-    }
-
-    .card {
-        flex-grow: 1;
-        width: 240px;
-    }
     
     .card-body {
-        padding: 16px;
+        margin: 18px;
+        height: 130px;
     }
 
     .card-body h3 {
@@ -621,7 +640,19 @@ footer ul a {
         font-size: 18px;
         padding: 8px 14px;
     }
-    
+
+    .game-categories-cards {
+        height: 410px;
+    }
+
+    .category-card .card-content {
+        padding: 16px;
+    }
+
+    .category-card h3 {
+        font-size: 1.3rem;
+    }
+
     .button-group {
         margin-top: 36px;
     }
@@ -636,7 +667,18 @@ footer ul a {
 
 @media only screen and (min-width: 1420px) {
     .card {
-        flex-grow: 1;
-        width: 280px;
+        padding: 8px;
+    }
+
+    .game-categories-cards {
+        height: 500px;
+    }
+
+    .category-card .card-content {
+        padding: 20px;
+    }
+
+    .category-card h3 {
+        font-size: 1.5rem;
     }
 } 

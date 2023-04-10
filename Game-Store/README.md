@@ -16,17 +16,18 @@ This is a beginner's project that tests learners their skills in JavaScript and 
 
 ## Scope of work
 #### In scope
-1. Users can see a list of games from the API in a gallery layout
-2. Users can see initial information of each game. For example, image, title, price, etc
-3. Users can see a Search bar
+1. Users can see a list of games from the API in a gallery layout (done)
+2. Users can see initial information of each game. For example, image, title, price, etc (done)
+3. Users can see a Search bar (done)
 4. Users can search for any game by app name
-5. Designing a Games page
-6. Designing an error message that pops up when the search results are unavailable
-7. Coding a list of all genres/categories
+5. Designing a Games page (done)
+6. Designing an error message that pops up when the search results are unavailable (done)
+7. Coding a list of all genres/categories (done)
 8. Users can filter games that match the genre and tag buttons that clicked
+9. Redesign Catergories section (done)
 
 
 #### Out of scope
 1. Users see the website with a clean UI design
-2. Users can view the website in an IphoneX screensize
+2. Users can view the website in an IphoneX screensize (done)
 3. Users can see a list of games from the API in a list layout
