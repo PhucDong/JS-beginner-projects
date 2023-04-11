@@ -96,7 +96,7 @@ ul li a {
 }
 
 /* Hero section */
-#hero-section {
+.hero-section {
     background-image: url("./images/hero-image.jpg");
     background-repeat: no-repeat;
     background-size: cover;
@@ -109,7 +109,7 @@ ul li a {
     position: relative;
 }
 
-#hero-section::before {
+.hero-section::before {
     content: '';
     position: absolute;
     top: 0;
@@ -119,11 +119,65 @@ ul li a {
     background-color: rgba(74, 74, 74, 78%);
 }
 
-#hero-section h2, #hero-section p {
+.detailed-hero-section::before {
+    content: none;
+}
+
+.detailed-main-content {
+    margin-top: 34px;
+}
+
+.detailed-game-brief-info h2 {
+    font-size: 1.4rem;
+}
+
+.detailed-game-brief-info p {
+    margin-top: 4px;
+}
+
+.detailed-game-price {
+    margin: 10px 0 20px 0;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    padding: 16px;
+}
+
+.detailed-game-price div {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 14px;
+    font-size: 1.1rem;
+    margin-top: 16px;
+}
+
+.detailed-game-price div button {
+    border: none;
+    background-color: var(--second-background-color);
+    padding: 8px 12px;
+    color: var(--second-text-color);
+    font-size: 1rem;
+}
+
+.detailed-game-tags {
+    margin-bottom: 34px;
+}
+
+.detailed-game-tags p {
+    margin-bottom: 6px;
+}
+
+.detailed-game-tags button {
+    border: none;
+    background-color: var(--second-background-color);
+    padding: 4px 10px;
+    color: var(--second-text-color);
+}
+
+.hero-section h2, .hero-section p {
     z-index: 1;
 }
 
-#hero-section h2 {
+.hero-section h2 {
     margin-bottom: 6px;
 }
 
@@ -163,6 +217,7 @@ ul li a {
     width: 50%;
     padding: 4px;
     color: var(--main-text-color);
+    cursor: pointer;
 }
 
 .card-content {
@@ -372,15 +427,15 @@ footer ul a {
         display: none;
     }
 
-    #hero-section {
-        height: 160px;
+    .hero-section {
+        height: 180px;
     }
 
-    #hero-section h2 {
+    .hero-section h2 {
         font-size: 1.8rem;
     }
 
-    #hero-section p {
+    .hero-section p {
         font-size: 1.3rem;
     }
 
@@ -447,6 +502,29 @@ footer ul a {
         margin-top: 45px;
     }
 
+    .detailed-main-content {
+        position: relative;
+        margin: 60px 0 15px 0;
+    }
+
+    .detailed-game-price {
+        position: absolute;
+        top: 0;
+        right: 22px;
+        margin: 0;
+        width: 360px;
+    }
+
+    .detailed-game-tags {
+        margin-top: 28px;
+        margin-bottom: 60px;
+    }
+
+    .detailed-game-tags button {
+        font-size: 1rem;
+        padding: 4px 12px;
+    }
+
     /* Footer */
     footer {
         padding: 32px 0;
@@ -505,15 +583,15 @@ footer ul a {
         font-size: 2rem;
     }
 
-    #hero-section {
+    .hero-section {
         height: 274px;
     }
 
-    #hero-section h2 {
+    .hero-section h2 {
         font-size: 2.8rem;
     }
 
-    #hero-section p {
+    .hero-section p {
         font-size: 2.1rem;
     }
 
@@ -577,6 +655,54 @@ footer ul a {
         margin-top: 80px;
     }
 
+    .detailed-main-content {
+        margin-top: 80px;
+        margin-bottom: 0;
+    }
+    
+    .detailed-game-brief-info h2 {
+        font-size: 2rem;
+    }
+    
+    .detailed-game-brief-info p {
+        margin-top: 4px;
+        font-size: 1.1rem;
+    }
+    
+    .detailed-game-price {
+        right: 78px;
+        padding: 22px;
+        width: 400px;
+    }
+    
+    .detailed-game-price div {
+        font-size: 1.2rem;
+        margin-top: 24px;
+    }
+    
+    .detailed-game-price div button {
+        padding: 10px 14px;
+        font-size: 1.1rem;
+    }
+    
+    .detailed-game-tags {
+        margin-bottom: 70px;
+    }
+    
+    .detailed-game-tags p {
+        margin-bottom: 6px;
+        font-size: 1.1rem;
+    }
+    
+    .detailed-game-description h3 {
+        font-size: 1.4rem;
+        margin-bottom: 6px;
+    }
+
+    .detailed-game-description p {
+        font-size: 1.1rem;
+    }
+
     /* Footer */
     footer {
         padding: 42px 0;
@@ -611,6 +737,10 @@ footer ul a {
 }
 
 @media only screen and (min-width: 1200px) {
+    .hero-section {
+        height: 300px;
+    }
+
     #featured-deals h2, #game-categories h2 {
         font-size: 1.5rem;
     }
@@ -663,9 +793,33 @@ footer ul a {
         font-size: 1.2rem;
         padding: 8px 12px;
     }
+    
+    .detailed-game-price {
+        width: 440px;
+    }
+    
+    .detailed-game-price div {
+        margin-top: 32px;
+    }
+    
+    .detailed-game-price div button {
+        padding: 10px 16px;
+    }
+    
+    .detailed-game-tags {
+        margin-bottom: 80px;
+    }
+    
+    .detailed-game-tags p {
+        margin-bottom: 8px;
+    }
 } 
 
 @media only screen and (min-width: 1420px) {
+    .hero-section {
+        height: 400px;
+    }
+
     .card {
         padding: 8px;
     }
@@ -680,5 +834,63 @@ footer ul a {
 
     .category-card h3 {
         font-size: 1.5rem;
+    }
+
+    .detailed-main-content {
+        margin-top: 100px;
+        margin-bottom: 20px;
+    }
+
+    .detailed-game-brief-info h2 {
+        font-size: 2.1rem;
+    }
+
+    .detailed-game-brief-info p {
+        margin-top: 6px;
+        font-size: 1.3rem;
+    }
+
+    .detailed-game-price {
+        width: 540px;
+    }
+
+    .detailed-game-price h3 {
+        font-size: 1.5rem;
+    }
+    
+    .detailed-game-price div {
+        margin-top: 40px;
+    }
+    
+    .detailed-game-price div p {
+        font-size: 1.6rem;
+    }
+
+    .detailed-game-price div button {
+        padding: 14px 20px;
+        font-size: 1.2rem;
+    }
+    
+    .detailed-game-tags {
+        margin-bottom: 90px;
+    }
+    
+    .detailed-game-tags p {
+        margin-bottom: 10px;
+        font-size: 1.3rem;
+    }
+
+    .detailed-game-tags button {
+        padding: 6px 14px;
+        font-size: 1.2rem;
+    }
+
+    .detailed-game-description h3 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    .detailed-game-description p {
+        font-size: 1.3rem;
     }
 } 

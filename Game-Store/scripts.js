@@ -107,3 +107,16 @@ nextButton.addEventListener("click", (event) => {
         renderGameCategoriesList();
     }
 });
+
+const detailedPage = document.querySelector(".detailed-hero-section");
+// detailedPage.style.backgroundImage = "url('https://steamcdn-a.akamaihd.net/steam/apps/20/page_bg_generated_v6b.jpg?t=1528732825')";
+
+const aList = document.getElementsByClassName("featured-deal-card");
+console.log(aList);
+
+const newList = Array.from(aList);
+// console.log(newList);
+
+newList.forEach(function(item) {
+    console.log(item);
+});
