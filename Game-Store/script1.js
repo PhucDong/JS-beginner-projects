@@ -29,16 +29,15 @@ async function renderFeaturedGames() {
     featuredGamesList = await getFeaturedGamesList();
     featuredGamesList.forEach(featuredGame => {
         featuredGamesCards.insertAdjacentHTML("beforeend",`
-            <div class="card featured-deal-card">
+            <div class="card featured-deal-card" id=${featuredGame.appid} onclick=displayGameDetails(${featuredGame.appid})>
                 <div class="card-content">
                     <div class="card-header featured-deal-header">
                         <img src=${featuredGame.header_image} alt=${featuredGame.name}>
                     </div>
-
                     <div class="card-body featured-deal-body">
                         <h3>${featuredGame.name}</h3>
                         <div class="price-and-button">
-                            <p>${featuredGame.price}</p>
+                            <p>$${featuredGame.price}</p>
                             <button class="add-to-cart-btn">Add to cart</button>
                         </div>
                     </div>
@@ -49,6 +48,68 @@ async function renderFeaturedGames() {
 }   
 
 renderFeaturedGames();
+
+const bodyEle = document.querySelector("main");
+let singleGameDetailsUrl = "";
+
+async function getGameDetailsList() {
+    const response = await fetch(singleGameDetailsUrl);
+    const data = await response.json();
+    // console.log(data);
+    return data["data"];
+}
+
+const mainSection = document.querySelector("main");
+
+async function renderGameDetailsList() {
+    const gameDetailsList = await getGameDetailsList();
+    // console.log(gameDetailsList);
+    mainSection.textContent = "";
+    
+    mainSection.insertAdjacentHTML("beforeend", `
+        <section class="hero-section detailed-hero-section">
+        </section>
+
+        <div class="container detailed-main-content">
+            <div class="detailed-game-brief-info">
+                <h2>${gameDetailsList.name}</h2>
+                <p>Genre: ${gameDetailsList.genres[0]}</p>
+                <p>Positive ratings: ${gameDetailsList.positive_ratings}</p>
+                <p>Negative ratings: ${gameDetailsList.negative_ratings}</p>
+                <p>Developer: ${gameDetailsList.developer}</p>
+                <p>Release date: ${gameDetailsList.release_date.slice(8, 10)}/${gameDetailsList.release_date.slice(5, 7)}/${gameDetailsList.release_date.slice(0, 4)}</p>
+            </div>
+            <div class="detailed-game-price">
+                <h3>Buy ${gameDetailsList.name}</h3>
+                <div>
+                    <p>$${gameDetailsList.price}</p>
+                    <button>Add to cart</button>
+                </div>
+            </div>
+            <div class="detailed-game-tags">
+                <p>Popular user-defined tags for this product</p>
+                <button>${gameDetailsList.steamspy_tags[0]}</button>
+                <button>${gameDetailsList.steamspy_tags[1]}</button>
+                <button>${gameDetailsList.steamspy_tags[2]}</button>
+            </div>
+
+            <div class="detailed-game-description">
+                <h3>Game Description</h3>
+                <p>${gameDetailsList.description}</p>
+            </div>
+        </div>
+    `);
+    // });
+}
+
+// let gameDetailsList = "";
+function displayGameDetails(id) {
+    singleGameDetailsUrl = `https://steam-api-dot-cs-platform-306304.et.r.appspot.com/single-game/${id}`;
+    // getGameDetailsList();
+    // gameDetailsList = await getGameDetailsList();
+    // console.log(gameDetailsList);
+    renderGameDetailsList();
+}
 
 // Game categories
 const gameCategoriesContainer = document.querySelector(".game-categories-cards");
@@ -111,12 +172,9 @@ nextButton.addEventListener("click", (event) => {
 const detailedPage = document.querySelector(".detailed-hero-section");
 // detailedPage.style.backgroundImage = "url('https://steamcdn-a.akamaihd.net/steam/apps/20/page_bg_generated_v6b.jpg?t=1528732825')";
 
-const aList = document.getElementsByClassName("featured-deal-card");
-console.log(aList);
+// const aList = document.getElementsByClassName("featured-deal-card");
+// console.log(aList);
 
-const newList = Array.from(aList);
-// console.log(newList);
+// const newList = Array.from(aList);
+// console.log(newList.length);
 
-newList.forEach(function(item) {
-    console.log(item);
-});
