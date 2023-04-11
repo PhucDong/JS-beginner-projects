@@ -25,7 +25,7 @@ This is a beginner's project that tests learners their skills in JavaScript and 
 7. Coding a list of all genres/categories (done)
 8. Users can filter games that match the genre and tag buttons that clicked
 9. Redesign Catergories section (done)
-10. Detailed page: render genres, and tags
+10. Detailed page: render genres, tags, and developers
 
 
 #### Out of scope

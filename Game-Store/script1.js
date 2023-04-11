@@ -20,8 +20,6 @@ async function getFeaturedGamesList() {
     }
 };
 
-// getFeaturedGamesList();
-
 // Render them to browser
 const featuredGamesCards = document.querySelector(".featured-deal-cards");
 
@@ -63,7 +61,6 @@ const mainSection = document.querySelector("main");
 
 async function renderGameDetailsList() {
     const gameDetailsList = await getGameDetailsList();
-    // console.log(gameDetailsList);
     mainSection.textContent = "";
     
     mainSection.insertAdjacentHTML("beforeend", `
@@ -73,10 +70,10 @@ async function renderGameDetailsList() {
         <div class="container detailed-main-content">
             <div class="detailed-game-brief-info">
                 <h2>${gameDetailsList.name}</h2>
-                <p>Genre: ${gameDetailsList.genres[0]}</p>
+                <p class="detailed-game-genres">${renderDetailedGameGenres()}</p>
                 <p>Positive ratings: ${gameDetailsList.positive_ratings}</p>
                 <p>Negative ratings: ${gameDetailsList.negative_ratings}</p>
-                <p>Developer: ${gameDetailsList.developer}</p>
+                <p class="detailed-game-developers">${renderDetailedDevelopers()}</p>
                 <p>Release date: ${gameDetailsList.release_date.slice(8, 10)}/${gameDetailsList.release_date.slice(5, 7)}/${gameDetailsList.release_date.slice(0, 4)}</p>
             </div>
             <div class="detailed-game-price">
@@ -88,9 +85,7 @@ async function renderGameDetailsList() {
             </div>
             <div class="detailed-game-tags">
                 <p>Popular user-defined tags for this product</p>
-                <button>${gameDetailsList.steamspy_tags[0]}</button>
-                <button>${gameDetailsList.steamspy_tags[1]}</button>
-                <button>${gameDetailsList.steamspy_tags[2]}</button>
+                ${renderDetailedGameTags()}
             </div>
 
             <div class="detailed-game-description">
@@ -102,12 +97,45 @@ async function renderGameDetailsList() {
     // });
 }
 
+async function renderDetailedGameGenres() {
+    const gameDetailsList = await getGameDetailsList();
+    const gameGenres = document.querySelector(".detailed-game-genres");
+    gameGenres.textContent = "Genres:";
+    gameDetailsList.genres.forEach(genre => {
+        gameGenres.textContent += ` ${genre},`;
+    });
+
+    gameGenres.textContent = gameGenres.textContent.slice(0, gameGenres.textContent.length-1);
+}
+
+async function renderDetailedDevelopers() {
+    const gameDetailsList = await getGameDetailsList();
+    const gameDevelopers = document.querySelector(".detailed-game-developers");
+    gameDevelopers.textContent = "Developers:";
+    gameDetailsList.developer.forEach(developer => {
+        gameDevelopers.textContent += ` ${developer},`;
+    });
+
+    gameDevelopers.textContent = gameDevelopers.textContent.slice(0, gameDevelopers.textContent.length-1);
+}
+
+async function renderDetailedGameTags() {
+    try {
+        const gameDetailsList = await getGameDetailsList();
+        const gameTags = document.querySelector(".detailed-game-tags");
+        gameDetailsList.steamspy_tags.forEach(tag => {
+            gameTags.insertAdjacentHTML("beforeend", `
+                <button>${tag}</button>
+            `);
+        });
+    } catch (error) {
+        console.group(error);
+    }
+}
+
 // let gameDetailsList = "";
 function displayGameDetails(id) {
     singleGameDetailsUrl = `https://steam-api-dot-cs-platform-306304.et.r.appspot.com/single-game/${id}`;
-    // getGameDetailsList();
-    // gameDetailsList = await getGameDetailsList();
-    // console.log(gameDetailsList);
     renderGameDetailsList();
 }
 
