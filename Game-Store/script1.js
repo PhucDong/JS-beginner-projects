@@ -7,7 +7,8 @@ hamburgerBars.addEventListener("click", () => {
 });
 
 // Get a list featured games
-const featuredGamesUrl = "https://steam-api-dot-cs-platform-306304.et.r.appspot.com/features";
+// const featuredGamesUrl = "https://steam-api-dot-cs-platform-306304.et.r.appspot.com/features";
+const featuredGamesUrl = "https://steam-api-mass.onrender.com/games";
 let featuredGamesList;
 
 async function getFeaturedGamesList() {
@@ -45,98 +46,108 @@ async function renderFeaturedGames() {
     });
 }   
 
-renderFeaturedGames();
-
 const bodyEle = document.querySelector("main");
 let singleGameDetailsUrl = "";
 
-async function getGameDetailsList() {
+async function getGameDetails() {
+    console.log("54", singleGameDetailsUrl);
     const response = await fetch(singleGameDetailsUrl);
+    console.log("56", response);
     const data = await response.json();
-    // console.log(data);
+    console.log(data);
     return data["data"];
 }
 
 const mainSection = document.querySelector("main");
 
-async function renderGameDetailsList() {
-    const gameDetailsList = await getGameDetailsList();
+function renderGameDetails(gameDetails) {
+    renderDetailedGameHeader(gameDetails);
+    renderDetailedGameGenres(gameDetails);
+    renderDetailedGameDevelopers(gameDetails);
+    renderDetailedGameTags(gameDetails);
+}
+
+function renderDetailedGameHeader(gameDetails) {
     mainSection.textContent = "";
     
     mainSection.insertAdjacentHTML("beforeend", `
         <section class="hero-section detailed-hero-section">
+            <img src=${gameDetails.background}  alt=${gameDetails.name} />
         </section>
 
         <div class="container detailed-main-content">
             <div class="detailed-game-brief-info">
-                <h2>${gameDetailsList.name}</h2>
-                <p class="detailed-game-genres">${renderDetailedGameGenres()}</p>
-                <p>Positive ratings: ${gameDetailsList.positive_ratings}</p>
-                <p>Negative ratings: ${gameDetailsList.negative_ratings}</p>
-                <p class="detailed-game-developers">${renderDetailedDevelopers()}</p>
-                <p>Release date: ${gameDetailsList.release_date.slice(8, 10)}/${gameDetailsList.release_date.slice(5, 7)}/${gameDetailsList.release_date.slice(0, 4)}</p>
+                <h2>${gameDetails.name}</h2>
+                <p class="detailed-game-genres"></p>
+                <p>Positive ratings: ${gameDetails.positive_ratings}</p>
+                <p>Negative ratings: ${gameDetails.negative_ratings}</p>
+                <p class="detailed-game-developers"></p>
+                <p>Release date: ${gameDetails.release_date.slice(8, 10)}/${gameDetails.release_date.slice(5, 7)}/${gameDetails.release_date.slice(0, 4)}</p>
             </div>
             <div class="detailed-game-price">
-                <h3>Buy ${gameDetailsList.name}</h3>
+                <h3>Buy ${gameDetails.name}</h3>
                 <div>
-                    <p>$${gameDetailsList.price}</p>
+                    <p>$${gameDetails.price}</p>
                     <button>Add to cart</button>
                 </div>
             </div>
             <div class="detailed-game-tags">
                 <p>Popular user-defined tags for this product</p>
-                ${renderDetailedGameTags()}
+                
             </div>
 
             <div class="detailed-game-description">
                 <h3>Game Description</h3>
-                <p>${gameDetailsList.description}</p>
+                <p>${gameDetails.description}</p>
             </div>
         </div>
     `);
-    // });
 }
 
-async function renderDetailedGameGenres() {
-    const gameDetailsList = await getGameDetailsList();
+function renderDetailedGameGenres(gameDetails) {
     const gameGenres = document.querySelector(".detailed-game-genres");
+    console.log(gameGenres);
     gameGenres.textContent = "Genres:";
-    gameDetailsList.genres.forEach(genre => {
+    gameDetails.genres.forEach(genre => {
         gameGenres.textContent += ` ${genre},`;
     });
 
     gameGenres.textContent = gameGenres.textContent.slice(0, gameGenres.textContent.length-1);
 }
 
-async function renderDetailedDevelopers() {
-    const gameDetailsList = await getGameDetailsList();
+function renderDetailedGameDevelopers(gameDetails) {
     const gameDevelopers = document.querySelector(".detailed-game-developers");
     gameDevelopers.textContent = "Developers:";
-    gameDetailsList.developer.forEach(developer => {
+    gameDetails.developer.forEach(developer => {
         gameDevelopers.textContent += ` ${developer},`;
     });
 
     gameDevelopers.textContent = gameDevelopers.textContent.slice(0, gameDevelopers.textContent.length-1);
 }
 
-async function renderDetailedGameTags() {
+function renderDetailedGameTags(gameDetails) {
     try {
-        const gameDetailsList = await getGameDetailsList();
+        console.log("127", gameDetails);
         const gameTags = document.querySelector(".detailed-game-tags");
-        gameDetailsList.steamspy_tags.forEach(tag => {
+        console.log("129", gameTags);
+        gameDetails.steamspy_tags.forEach(tag => {
+            console.log(tag);
             gameTags.insertAdjacentHTML("beforeend", `
                 <button>${tag}</button>
             `);
         });
+        // return gameTags;
+        // ko render function => trả 1 object
     } catch (error) {
-        console.group(error);
+        console.log("139", error);
     }
 }
 
 // let gameDetailsList = "";
-function displayGameDetails(id) {
-    singleGameDetailsUrl = `https://steam-api-dot-cs-platform-306304.et.r.appspot.com/single-game/${id}`;
-    renderGameDetailsList();
+async function displayGameDetails(id) {
+    singleGameDetailsUrl = `https://steam-api-mass.onrender.com/single-game/${id}`;
+    let gameDetails = await getGameDetails();
+    renderGameDetails(gameDetails);
 }
 
 // Game categories
@@ -145,7 +156,9 @@ const nextButton = document.querySelector(".next-btn");
 const previousButton = document.querySelector(".previous-btn");
 let currentPage = 1;
 const limitedItemsPerPage = 9;
-let gameCategoriesUrl = `https://steam-api-dot-cs-platform-306304.et.r.appspot.com/genres?page=${currentPage}&limit=${limitedItemsPerPage}`;
+// let gameCategoriesUrl = `https://steam-api-dot-cs-platform-306304.et.r.appspot.com/genres?page=${currentPage}&limit=${limitedItemsPerPage}`;
+let gameCategoriesUrl = `https://steam-api-mass.onrender.com/genres?page=${currentPage}&limit=${limitedItemsPerPage}`;
+
 
 // Get a list of game categories
 async function getGameCategoriesList() {
@@ -169,15 +182,13 @@ async function renderGameCategoriesList() {
     });
 }
 
-renderGameCategoriesList();
-
 previousButton.addEventListener("click", (event) => {
     if (currentPage === 1) {
         event.preventDefault();
     } else {
         currentPage -= 1;
         console.log(`Current page: ${currentPage}`);
-        gameCategoriesUrl = `https://steam-api-dot-cs-platform-306304.et.r.appspot.com/genres?page=${currentPage}&limit=${limitedItemsPerPage}`;
+        gameCategoriesUrl = `https://steam-api-mass.onrender.com/genres?page=${currentPage}&limit=${limitedItemsPerPage}`;
         getGameCategoriesList();
         gameCategoriesContainer.textContent = "";
         renderGameCategoriesList();
@@ -190,10 +201,40 @@ nextButton.addEventListener("click", (event) => {
     } else {
         currentPage += 1;
         console.log(`Current page: ${currentPage}`);
-        gameCategoriesUrl = `https://steam-api-dot-cs-platform-306304.et.r.appspot.com/genres?page=${currentPage}&limit=${limitedItemsPerPage}`;
+        gameCategoriesUrl = `https://steam-api-mass.onrender.com/genres?page=${currentPage}&limit=${limitedItemsPerPage}`;
         getGameCategoriesList();
         gameCategoriesContainer.textContent = "";
         renderGameCategoriesList();
     }
 });
 
+async function renderCategoriesSelection() {
+    gameCategoriesUrl = `https://steam-api-mass.onrender.com/genres?page=1&limit=29`;
+    const gameCategoriesList = await getGameCategoriesList();
+    const categoriesSelectionEle = document.querySelector("#categories");
+
+    gameCategoriesList.forEach(category => {
+        categoriesSelectionEle.insertAdjacentHTML("beforeend", `
+            <option value=${category.name}>${category.name}</option>
+        `);
+    });
+}
+
+function main() {
+    // call API list game
+    getFeaturedGamesList();
+
+    // render list game
+    renderFeaturedGames();
+
+    // get game categories
+    getGameCategoriesList();
+
+    // render game categories
+    // renderGameCategoriesList();
+
+    // render categories selection
+    renderCategoriesSelection();
+}
+
+main();
