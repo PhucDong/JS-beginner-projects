@@ -22,9 +22,10 @@ async function getFeaturedGamesList() {
 };
 
 // Render them to browser
-const featuredGamesCards = document.querySelector(".featured-deal-cards");
+
 
 async function renderFeaturedGames() {
+    const featuredGamesCards = document.querySelector(".featured-deal-cards");
     featuredGamesList = await getFeaturedGamesList();
     featuredGamesList.forEach(featuredGame => {
         featuredGamesCards.insertAdjacentHTML("beforeend",`
@@ -42,11 +43,11 @@ async function renderFeaturedGames() {
                     </div>
                 </div>
             </div>
-        `);
+            `);
     });
 }   
 
-const bodyEle = document.querySelector("main");
+// const bodyEle = document.querySelector("main");
 let singleGameDetailsUrl = "";
 
 async function getGameDetails() {
@@ -58,7 +59,7 @@ async function getGameDetails() {
     return data["data"];
 }
 
-const mainSection = document.querySelector("main");
+const mainWrapper = document.querySelector("#main-wrapper");
 
 function renderGameDetails(gameDetails) {
     renderDetailedGameHeader(gameDetails);
@@ -68,9 +69,9 @@ function renderGameDetails(gameDetails) {
 }
 
 function renderDetailedGameHeader(gameDetails) {
-    mainSection.textContent = "";
+    mainWrapper.textContent = "";
     
-    mainSection.insertAdjacentHTML("beforeend", `
+    mainWrapper.insertAdjacentHTML("beforeend", `
         <section class="hero-section detailed-hero-section">
             <img src=${gameDetails.background}  alt=${gameDetails.name} />
         </section>
@@ -166,27 +167,36 @@ async function getGameCategoriesList() {
     return data["data"];    
 }
 
-// async function printAllGameCategories() {
-//     const gameCategoriesList = await getGameCategoriesList();
-//     gameCategoriesList.forEach(genre => {
-//         console.log(genre.name);
-//     });
-// }
-
-// printAllGameCategories();
-
 // Render the list of game categories
 async function renderGameCategoriesList() {
-    const gameCategoriesList = await getGameCategoriesList();
-    gameCategoriesList.forEach(category => {
-        gameCategoriesContainer.insertAdjacentHTML("beforeend", `
-            <div class="card category-card" onclick=displayGamesOfACategory("${category.name}")>
-                <div class="card-content">
-                    <h3>${category.name}</h3>
+    if (window.location.href.slice(0, window.location.href.length-1) === window.location.origin) {
+        const gameCategoriesList = await getGameCategoriesList();
+        let encodedCategory = "";
+    
+        gameCategoriesList.forEach(category => {
+            encodedCategory = encodedSearchQuery(category.name);
+    
+            gameCategoriesContainer.insertAdjacentHTML("beforeend", `
+                <div class="card category-card" onclick=displayGamesOfACategory("${encodedCategory}")>
+                    <div class="card-content">
+                        <h3>${category.name}</h3>
+                    </div>
                 </div>
-            </div>
-        `);
-    });
+            `);
+        });
+    } else {
+        return;
+    }
+}
+
+function encodedSearchQuery(str) {
+    return encodeURI(str)
+      .replace(/%5B/g, "[")
+      .replace(/%5D/g, "]")
+      .replace(
+        /[!'()*]/g,
+        (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`
+    );
 }
 
 previousButton.addEventListener("click", (event) => {
@@ -195,10 +205,19 @@ previousButton.addEventListener("click", (event) => {
     } else {
         currentPage -= 1;
         console.log(`Current page: ${currentPage}`);
-        gameCategoriesUrl = `https://steam-api-mass.onrender.com/genres?page=${currentPage}&limit=${limitedItemsPerPage}`;
-        getGameCategoriesList();
-        gameCategoriesContainer.textContent = "";
-        renderGameCategoriesList();
+     
+        if (!previousButton.id) {
+            gameCategoriesUrl = `https://steam-api-mass.onrender.com/genres?page=${currentPage}&limit=${limitedItemsPerPage}`;
+            getGameCategoriesList();
+            gameCategoriesContainer.textContent = "";
+            renderGameCategoriesList();
+        } else {
+            gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games?page=${currentPage}&limit=10&genres=${previousButton.id.slice(0, previousButton.id.length - 1)}`;
+            console.log(gamesOfACategoryUrl);
+            renderGamesOfACategory(gamesOfACategoryUrl);
+            renderGameCategoriesSelection();
+            renderSearchResultsCards(gamesOfACategoryUrl);      
+        }
     }
 });
 
@@ -208,210 +227,127 @@ nextButton.addEventListener("click", (event) => {
     } else {
         currentPage += 1;
         console.log(`Current page: ${currentPage}`);
-        gameCategoriesUrl = `https://steam-api-mass.onrender.com/genres?page=${currentPage}&limit=${limitedItemsPerPage}`;
-        getGameCategoriesList();
-        gameCategoriesContainer.textContent = "";
-        renderGameCategoriesList();
+
+        if (!nextButton.id) {
+            gameCategoriesUrl = `https://steam-api-mass.onrender.com/genres?page=${currentPage}&limit=${limitedItemsPerPage}`;
+            getGameCategoriesList();
+            gameCategoriesContainer.textContent = "";
+            renderGameCategoriesList();
+        } else {
+            gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games?page=${currentPage}&limit=10&genres=${nextButton.id.slice(0, previousButton.id.length - 1)}`;
+            console.log(gamesOfACategoryUrl);
+            renderGamesOfACategory(gamesOfACategoryUrl);
+            renderGameCategoriesSelection();
+            renderSearchResultsCards(gamesOfACategoryUrl);      
+        }
     }
 });
 
-// async function renderCategoriesSelection() {
-//     gameCategoriesUrl = `https://steam-api-mass.onrender.com/genres?page=1&limit=29`;
-//     const gameCategoriesList = await getGameCategoriesList();
-//     const categoriesSelectionEle = document.querySelector("#categories");
+async function renderGameCategoriesSelection() {
+    gameCategoriesUrl = `https://steam-api-mass.onrender.com/genres?page=1&limit=29`;
+    console.log(238, gameCategoriesUrl);
+    const gameCategoriesList = await getGameCategoriesList();
 
-//     gameCategoriesList.forEach(category => {
-//         categoriesSelectionEle.insertAdjacentHTML("beforeend", `
-//             <option value=${category.name}>${category.name}</option>
-//         `);
-//     });
-// }
+    let categoriesSelectionEle = document.querySelector("#categories");
+    
+    gameCategoriesList.forEach(category => {
+        categoriesSelectionEle.insertAdjacentHTML("beforeend", `
+            <option value=${encodedSearchQuery(category.name)}>${category.name}</option>
+        `);
+    });
 
-// async function getGamesOfACategory() {
-//     const response = await fetch(featuredGamesUrl);
-//     const data = await response.json();
-//     return data["data"];
-// }
+    console.log(247, categoriesSelectionEle);
+}
 
-function renderGamesOfACategory(gamesOfACategoryList) {
-    mainSection.textContent = "";
-    mainSection.insertAdjacentHTML("beforeend", `
-        <div class="container">
-            <input class="search-bar" type="text" placeholder="Search for your game">
-            
-            <div id="categories-selection">
-                <h2>Game Categories</h2>
-                <div class="select-and-search">
-                    <select name="categories" id="categories">
-                    
-                    </select>
+async function getGamesOfACategory(gamesOfACategoryUrl) {
+    const response = await fetch(gamesOfACategoryUrl);
+    const data = await response.json();
+    return data["data"];
+}
 
-                    <button>Search</button>
-                </div>
+const mainContent = document.querySelector(".main-content");
+
+function renderGamesOfACategory() {
+    mainContent.textContent = "";
+        
+    mainContent.insertAdjacentHTML("beforeend", `
+        <div id="categories-selection">
+            <h2>Game Categories</h2>
+            <div class="select-and-search">
+                <select name="categories" id="categories">
+                        
+                </select>
+
+                <button>Search</button>
             </div>
-
-            <section id="search-results">
-                <h2>Search Results</h2>
-                <div class="bottom-underline"></div>
-
-                <div class="cards featured-deal-cards">
-                    <div class="card featured-deal-card" id="20">
-                        <div class="card-content">
-                            <div class="card-header featured-deal-header">
-                                <img src="./images/wasteland3.jpg" alt="Wasteland 3" >
-                            </div>
-                            <div class="card-body featured-deal-body">
-                                <h3>Wasteland 3</h3>
-                                <div class="price-and-button">
-                                    <p>$9.67</p>
-                                    <button class="add-to-cart-btn">Add to cart</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card featured-deal-card" id="20">
-                        <div class="card-content">
-                            <div class="card-header featured-deal-header">
-                                <img src="./images/wasteland3.jpg" alt="Wasteland 3" >
-                            </div>
-                            <div class="card-body featured-deal-body">
-                                <h3>Wasteland 3</h3>
-                                <div class="price-and-button">
-                                    <p>$9.67</p>
-                                    <button class="add-to-cart-btn">Add to cart</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card featured-deal-card" id="20">
-                        <div class="card-content">
-                            <div class="card-header featured-deal-header">
-                                <img src="./images/wasteland3.jpg" alt="Wasteland 3" >
-                            </div>
-                            <div class="card-body featured-deal-body">
-                                <h3>Wasteland 3</h3>
-                                <div class="price-and-button">
-                                    <p>$9.67</p>
-                                    <button class="add-to-cart-btn">Add to cart</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card featured-deal-card" id="20">
-                        <div class="card-content">
-                            <div class="card-header featured-deal-header">
-                                <img src="./images/wasteland3.jpg" alt="Wasteland 3" >
-                            </div>
-                            <div class="card-body featured-deal-body">
-                                <h3>Wasteland 3</h3>
-                                <div class="price-and-button">
-                                    <p>$9.67</p>
-                                    <button class="add-to-cart-btn">Add to cart</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card featured-deal-card" id="20">
-                        <div class="card-content">
-                            <div class="card-header featured-deal-header">
-                                <img src="./images/wasteland3.jpg" alt="Wasteland 3" >
-                            </div>
-                            <div class="card-body featured-deal-body">
-                                <h3>Wasteland 3</h3>
-                                <div class="price-and-button">
-                                    <p>$9.67</p>
-                                    <button class="add-to-cart-btn">Add to cart</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card featured-deal-card" id="20">
-                        <div class="card-content">
-                            <div class="card-header featured-deal-header">
-                                <img src="./images/wasteland3.jpg" alt="Wasteland 3" >
-                            </div>
-                            <div class="card-body featured-deal-body">
-                                <h3>Wasteland 3</h3>
-                                <div class="price-and-button">
-                                    <p>$9.67</p>
-                                    <button class="add-to-cart-btn">Add to cart</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card featured-deal-card" id="20">
-                        <div class="card-content">
-                            <div class="card-header featured-deal-header">
-                                <img src="./images/wasteland3.jpg" alt="Wasteland 3" >
-                            </div>
-                            <div class="card-body featured-deal-body">
-                                <h3>Wasteland 3</h3>
-                                <div class="price-and-button">
-                                    <p>$9.67</p>
-                                    <button class="add-to-cart-btn">Add to cart</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card featured-deal-card" id="20">
-                        <div class="card-content">
-                            <div class="card-header featured-deal-header">
-                                <img src="./images/wasteland3.jpg" alt="Wasteland 3" >
-                            </div>
-                            <div class="card-body featured-deal-body">
-                                <h3>Wasteland 3</h3>
-                                <div class="price-and-button">
-                                    <p>$9.67</p>
-                                    <button class="add-to-cart-btn">Add to cart</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card featured-deal-card" id="20">
-                        <div class="card-content">
-                            <div class="card-header featured-deal-header">
-                                <img src="./images/wasteland3.jpg" alt="Wasteland 3" >
-                            </div>
-                            <div class="card-body featured-deal-body">
-                                <h3>Wasteland 3</h3>
-                                <div class="price-and-button">
-                                    <p>$9.67</p>
-                                    <button class="add-to-cart-btn">Add to cart</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card featured-deal-card" id="20">
-                        <div class="card-content">
-                            <div class="card-header featured-deal-header">
-                                <img src="./images/wasteland3.jpg" alt="Wasteland 3" >
-                            </div>
-                            <div class="card-body featured-deal-body">
-                                <h3>Wasteland 3</h3>
-                                <div class="price-and-button">
-                                    <p>$9.67</p>
-                                    <button class="add-to-cart-btn">Add to cart</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="button-group">
-                    <button class="previous-btn">Previous</button>
-                    <button class="next-btn">Next</button>
-                </div>
-            </section>
         </div>
+
+        <section id="search-results">
+            <h2 class="target-heading">Search Results</h2>
+            <div class="bottom-underline"></div>
+
+            <div class="cards search-results-cards">
+                        
+            </div>
+        </section>
     `);
 }
 
-function displayGamesOfACategory(category) {
-    // featuredGamesUrl = `https://steam-api-mass.onrender.com/games?genres=${category}`;
-    console.log(category);
-    // console.log(featuredGamesUrl);
-    // let gamesOfACategoryList = await getGamesOfACategory();
-    // renderGamesOfACategory(gamesOfACategoryList);
+async function renderSearchResultsCards(gamesOfACategoryUrl) {
+    let gamesOfACategoryList = await getGamesOfACategory(gamesOfACategoryUrl);
+    const searchResultsCards = document.querySelector(".search-results-cards");
+
+    gamesOfACategoryList.forEach(game => {
+        searchResultsCards.insertAdjacentHTML("beforeend", `
+            <div class="card search-result-card">
+                <div class="card-content">
+                    <div class="card-header featured-deal-header">
+                        <img src=${game.header_image} alt=${game.name} >
+                    </div>
+                    <div class="card-body featured-deal-body">
+                        <h3>${game.name}</h3>
+                        <div class="price-and-button">
+                            <p>$${game.price}</p>
+                            <button class="add-to-cart-btn">Add to cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `);
+    });
+}
+
+let gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games`;
+async function displayGamesOfACategory(category) {
+    gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games?page=${currentPage}&limit=10&genres=${category}`;
+    console.log(325, gamesOfACategoryUrl);
+
+    previousButton.id = `${category}1`;
+    nextButton.id = `${category}2`;
+    
+    renderGamesOfACategory(gamesOfACategoryUrl);
+    renderGameCategoriesSelection();
+    renderSearchResultsCards(gamesOfACategoryUrl);
+}
+
+const searchBar =  document.querySelector(".search-bar");
+
+searchBar.addEventListener("keyup", async (event) => {
+    if (event.key === "Enter") {
+        let encodedSearchBarValue = encodedSearchQuery(searchBar.value.trim());
+        let searchBarUrl = `https://steam-api-mass.onrender.com/games?q=${encodedSearchBarValue}`;
+        renderGameCategoriesSelection();
+        renderGamesOfACategory();
+        renderSearchResultsCards(searchBarUrl);
+    }
+});
+
+
+function displayGamesOfCategoryAfterSelection() {
+    
+    gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games?page=${currentPage}&limit=10&genres=${gameGenreSelectionEle.value}`;
+    renderGamesOfACategory();
+    renderSearchResultsCards(gamesOfACategoryUrl);
 }
 
 function main() {
@@ -427,14 +363,11 @@ function main() {
     // render game categories
     renderGameCategoriesList();
 
-    // render categories selection
-    // renderCategoriesSelection();
+    // select a genre from list
 
-    // get games in a specific category
-    // getGamesOfACategory();
-
-    // render those games
-    // displayGamesOfACategory(category);
+    // render games of that genre
+    displayGamesOfCategoryAfterSelection();
+    // onclick=displayGamesOfCategoryAfterSelection()
 }
 
 main();
