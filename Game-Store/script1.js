@@ -10,19 +10,9 @@ hamburgerBars.addEventListener("click", () => {
 let featuredGamesUrl = "https://steam-api-mass.onrender.com/games";
 let featuredGamesList;
 
-async function getFeaturedGamesList() {
-    try {
-        const response = await fetch(featuredGamesUrl);
-        const data = await response.json();
-        return data["data"];
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-async function renderFeaturedGames() {
+async function renderFeaturedGames(featuredGamesList) {
     const featuredGamesCards = document.querySelector(".featured-deal-cards");
-    featuredGamesList = await getFeaturedGamesList();
+
     featuredGamesList.forEach(featuredGame => {
         featuredGamesCards.insertAdjacentHTML("beforeend",`
             <div class="card featured-deal-card" id=${featuredGame.appid} onclick=displayGameDetails(${featuredGame.appid})>
@@ -42,15 +32,6 @@ async function renderFeaturedGames() {
             `);
     });
 }   
-
-// const bodyEle = document.querySelector("main");
-let singleGameDetailsUrl = "";
-
-async function getGameDetails() {
-    const response = await fetch(singleGameDetailsUrl);
-    const data = await response.json();
-    return data["data"];
-}
 
 const mainWrapper = document.querySelector("#main-wrapper");
 
@@ -137,10 +118,9 @@ function renderDetailedGameTags(gameDetails) {
     }
 }
 
-// let gameDetailsList = "";
 async function displayGameDetails(id) {
-    singleGameDetailsUrl = `https://steam-api-mass.onrender.com/single-game/${id}`;
-    let gameDetails = await getGameDetails();
+    let singleGameDetailsUrl = `https://steam-api-mass.onrender.com/single-game/${id}`;
+    let gameDetails = await getGameData(singleGameDetailsUrl);
     renderGameDetails(gameDetails);
 }
 
@@ -152,19 +132,15 @@ let currentPage = 1;
 const limitedItemsPerPage = 9;
 let gameCategoriesUrl = `https://steam-api-mass.onrender.com/genres?page=${currentPage}&limit=${limitedItemsPerPage}`;
 
-
-// Get a list of game categories
-async function getGameCategoriesList() {
-    const response = await fetch(gameCategoriesUrl);
+async function getGameData(url) {
+    const response = await fetch(url);
     const data = await response.json();
-    return data["data"];    
+    return data["data"];
 }
 
 // Render the list of game categories
-async function renderGameCategoriesList() {
-    const gameCategoriesList = await getGameCategoriesList();
+async function renderGameCategoriesList(gameCategoriesList) {
     let encodedCategory = "";
-    
     gameCategoriesList.forEach(category => {
         encodedCategory = encodedSearchQuery(category.name);
     
@@ -196,14 +172,13 @@ previousButton.addEventListener("click", (event) => {
         console.log(`Current page: ${currentPage}`);
      
         if (!previousButton.id) {
-            gameCategoriesUrl = `https://steam-api-mass.onrender.com/genres?page=${currentPage}&limit=${limitedItemsPerPage}`;
-            getGameCategoriesList();
+            getGameData(gameCategoriesUrl);
             gameCategoriesContainer.textContent = "";
             renderGameCategoriesList();
         } else {
             gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games?page=${currentPage}&limit=10&genres=${previousButton.id.slice(0, previousButton.id.length - 1)}`;
             console.log(gamesOfACategoryUrl);
-            renderGamesOfACategory();
+            renderStructureForGamesOfACategory();
             renderGameCategoriesSelection();
             renderSearchResultsCards(gamesOfACategoryUrl);      
         }
@@ -218,14 +193,13 @@ nextButton.addEventListener("click", (event) => {
         console.log(`Current page: ${currentPage}`);
 
         if (!nextButton.id) {
-            gameCategoriesUrl = `https://steam-api-mass.onrender.com/genres?page=${currentPage}&limit=${limitedItemsPerPage}`;
-            getGameCategoriesList();
+            getGameData(gameCategoriesUrl);
             gameCategoriesContainer.textContent = "";
             renderGameCategoriesList();
         } else {
             gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games?page=${currentPage}&limit=10&genres=${nextButton.id.slice(0, previousButton.id.length - 1)}`;
             console.log(gamesOfACategoryUrl);
-            renderGamesOfACategory();
+            renderStructureForGamesOfACategory();
             renderGameCategoriesSelection();
             renderSearchResultsCards(gamesOfACategoryUrl);      
         }
@@ -234,7 +208,7 @@ nextButton.addEventListener("click", (event) => {
 
 async function renderGameCategoriesSelection() {
     gameCategoriesUrl = `https://steam-api-mass.onrender.com/genres?page=1&limit=29`;
-    const gameCategoriesList = await getGameCategoriesList();
+    const gameCategoriesList = await getGameData(gameCategoriesUrl);
 
     let categoriesSelectionEle = document.querySelector("#categories");
     
@@ -245,15 +219,9 @@ async function renderGameCategoriesSelection() {
     });
 }
 
-async function getGamesOfACategory(gamesOfACategoryUrl) {
-    const response = await fetch(gamesOfACategoryUrl);
-    const data = await response.json();
-    return data["data"];
-}
-
 const mainContent = document.querySelector(".main-content");
 
-function renderGamesOfACategory() {
+function renderStructureForGamesOfACategory() {
     mainContent.textContent = "";
         
     mainContent.insertAdjacentHTML("beforeend", `
@@ -278,7 +246,7 @@ function renderGamesOfACategory() {
 }
 
 async function renderSearchResultsCards(gamesOfACategoryUrl) {
-    let gamesOfACategoryList = await getGamesOfACategory(gamesOfACategoryUrl);
+    let gamesOfACategoryList = await getGameData(gamesOfACategoryUrl);
     const searchResultsCards = document.querySelector(".search-results-cards");
 
     gamesOfACategoryList.forEach(game => {
@@ -302,13 +270,14 @@ async function renderSearchResultsCards(gamesOfACategoryUrl) {
 }
 
 let gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games`;
+
 async function displayGamesOfACategory(category) {
     gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games?page=${currentPage}&limit=10&genres=${category}`;
 
     previousButton.id = `${category}1`;
     nextButton.id = `${category}2`;
     
-    renderGamesOfACategory();
+    renderStructureForGamesOfACategory();
     renderGameCategoriesSelection();
     renderSearchResultsCards(gamesOfACategoryUrl);
 }
@@ -320,7 +289,7 @@ searchBar.addEventListener("keyup", async (event) => {
         let encodedSearchBarValue = encodedSearchQuery(searchBar.value.trim());
         let searchBarUrl = `https://steam-api-mass.onrender.com/games?q=${encodedSearchBarValue}`;
         renderGameCategoriesSelection();
-        renderGamesOfACategory();
+        renderStructureForGamesOfACategory();
         renderSearchResultsCards(searchBarUrl);
     }
 });
@@ -332,22 +301,22 @@ function displayGamesOfCategoryAfterSelection() {
     previousButton.id = `${gameGenreSelectionEle.value}1`;
     nextButton.id = `${gameGenreSelectionEle.value}2`;
     renderGameCategoriesSelection();
-    renderGamesOfACategory();
+    renderStructureForGamesOfACategory();
     renderSearchResultsCards(gamesOfACategoryUrl);
 }
 
-function main() {
+async function main() {
     // call API list game
-    getFeaturedGamesList();
+    let featuredGamesList = await getGameData(featuredGamesUrl);
 
     // render list game
-    renderFeaturedGames();
+    renderFeaturedGames(featuredGamesList);
 
     // get game categories
-    getGameCategoriesList();
+    let gameCategoriesList = await getGameData(gameCategoriesUrl);
 
     // render game categories
-    renderGameCategoriesList();
+    renderGameCategoriesList(gameCategoriesList);
 }
 
 main();
