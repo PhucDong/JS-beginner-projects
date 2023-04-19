@@ -379,15 +379,6 @@ ul li a {
     text-transform: capitalize;
 }
 
-.select-and-search button {
-    border: none;
-    background-color: var(--second-background-color);
-    padding: 0 12px;
-    color: var(--second-text-color);
-    font-size: 1.1rem;
-    cursor: pointer;
-}
-
 /* Footer */
 footer {
     margin-top: 34px;
@@ -503,11 +494,6 @@ footer ul a {
 
     .select-and-search select {
         padding: 6px 10px;
-        font-size: 1.2rem;
-    }
-    
-    .select-and-search button {
-        padding: 0 14px;
         font-size: 1.2rem;
     }
 
@@ -676,11 +662,6 @@ footer ul a {
 
     .select-and-search select {
         padding: 8px 12px;
-        font-size: 1.3rem;
-    }
-    
-    .select-and-search button {
-        padding: 0 16px;
         font-size: 1.3rem;
     }
 
@@ -907,11 +888,6 @@ footer ul a {
 
     .select-and-search select {
         padding: 10px 16px;
-        font-size: 1.4rem;
-    }
-    
-    .select-and-search button {
-        padding: 0 22px;
         font-size: 1.4rem;
     }
 

@@ -7,7 +7,6 @@ hamburgerBars.addEventListener("click", () => {
 });
 
 // Get a list featured games
-// const featuredGamesUrl = "https://steam-api-dot-cs-platform-306304.et.r.appspot.com/features";
 let featuredGamesUrl = "https://steam-api-mass.onrender.com/games";
 let featuredGamesList;
 
@@ -20,9 +19,6 @@ async function getFeaturedGamesList() {
         console.log(error);
     }
 };
-
-// Render them to browser
-
 
 async function renderFeaturedGames() {
     const featuredGamesCards = document.querySelector(".featured-deal-cards");
@@ -51,11 +47,8 @@ async function renderFeaturedGames() {
 let singleGameDetailsUrl = "";
 
 async function getGameDetails() {
-    console.log("54", singleGameDetailsUrl);
     const response = await fetch(singleGameDetailsUrl);
-    console.log("56", response);
     const data = await response.json();
-    console.log(data);
     return data["data"];
 }
 
@@ -169,24 +162,20 @@ async function getGameCategoriesList() {
 
 // Render the list of game categories
 async function renderGameCategoriesList() {
-    if (window.location.href.slice(0, window.location.href.length-1) === window.location.origin) {
-        const gameCategoriesList = await getGameCategoriesList();
-        let encodedCategory = "";
+    const gameCategoriesList = await getGameCategoriesList();
+    let encodedCategory = "";
     
-        gameCategoriesList.forEach(category => {
-            encodedCategory = encodedSearchQuery(category.name);
+    gameCategoriesList.forEach(category => {
+        encodedCategory = encodedSearchQuery(category.name);
     
-            gameCategoriesContainer.insertAdjacentHTML("beforeend", `
-                <div class="card category-card" onclick=displayGamesOfACategory("${encodedCategory}")>
-                    <div class="card-content">
-                        <h3>${category.name}</h3>
-                    </div>
+        gameCategoriesContainer.insertAdjacentHTML("beforeend", `
+            <div class="card category-card" onclick=displayGamesOfACategory("${encodedCategory}")>
+                <div class="card-content">
+                    <h3>${category.name}</h3>
                 </div>
-            `);
-        });
-    } else {
-        return;
-    }
+            </div>
+        `);
+    });
 }
 
 function encodedSearchQuery(str) {
@@ -214,7 +203,7 @@ previousButton.addEventListener("click", (event) => {
         } else {
             gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games?page=${currentPage}&limit=10&genres=${previousButton.id.slice(0, previousButton.id.length - 1)}`;
             console.log(gamesOfACategoryUrl);
-            renderGamesOfACategory(gamesOfACategoryUrl);
+            renderGamesOfACategory();
             renderGameCategoriesSelection();
             renderSearchResultsCards(gamesOfACategoryUrl);      
         }
@@ -236,7 +225,7 @@ nextButton.addEventListener("click", (event) => {
         } else {
             gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games?page=${currentPage}&limit=10&genres=${nextButton.id.slice(0, previousButton.id.length - 1)}`;
             console.log(gamesOfACategoryUrl);
-            renderGamesOfACategory(gamesOfACategoryUrl);
+            renderGamesOfACategory();
             renderGameCategoriesSelection();
             renderSearchResultsCards(gamesOfACategoryUrl);      
         }
@@ -245,7 +234,6 @@ nextButton.addEventListener("click", (event) => {
 
 async function renderGameCategoriesSelection() {
     gameCategoriesUrl = `https://steam-api-mass.onrender.com/genres?page=1&limit=29`;
-    console.log(238, gameCategoriesUrl);
     const gameCategoriesList = await getGameCategoriesList();
 
     let categoriesSelectionEle = document.querySelector("#categories");
@@ -255,8 +243,6 @@ async function renderGameCategoriesSelection() {
             <option value=${encodedSearchQuery(category.name)}>${category.name}</option>
         `);
     });
-
-    console.log(247, categoriesSelectionEle);
 }
 
 async function getGamesOfACategory(gamesOfACategoryUrl) {
@@ -274,11 +260,9 @@ function renderGamesOfACategory() {
         <div id="categories-selection">
             <h2>Game Categories</h2>
             <div class="select-and-search">
-                <select name="categories" id="categories">
+                <select name="categories" id="categories" onchange=displayGamesOfCategoryAfterSelection()>
                         
                 </select>
-
-                <button>Search</button>
             </div>
         </div>
 
@@ -320,12 +304,11 @@ async function renderSearchResultsCards(gamesOfACategoryUrl) {
 let gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games`;
 async function displayGamesOfACategory(category) {
     gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games?page=${currentPage}&limit=10&genres=${category}`;
-    console.log(325, gamesOfACategoryUrl);
 
     previousButton.id = `${category}1`;
     nextButton.id = `${category}2`;
     
-    renderGamesOfACategory(gamesOfACategoryUrl);
+    renderGamesOfACategory();
     renderGameCategoriesSelection();
     renderSearchResultsCards(gamesOfACategoryUrl);
 }
@@ -344,8 +327,11 @@ searchBar.addEventListener("keyup", async (event) => {
 
 
 function displayGamesOfCategoryAfterSelection() {
-    
+    const gameGenreSelectionEle = document.querySelector("#categories");
     gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games?page=${currentPage}&limit=10&genres=${gameGenreSelectionEle.value}`;
+    previousButton.id = `${gameGenreSelectionEle.value}1`;
+    nextButton.id = `${gameGenreSelectionEle.value}2`;
+    renderGameCategoriesSelection();
     renderGamesOfACategory();
     renderSearchResultsCards(gamesOfACategoryUrl);
 }
@@ -362,12 +348,6 @@ function main() {
 
     // render game categories
     renderGameCategoriesList();
-
-    // select a genre from list
-
-    // render games of that genre
-    displayGamesOfCategoryAfterSelection();
-    // onclick=displayGamesOfCategoryAfterSelection()
 }
 
 main();
