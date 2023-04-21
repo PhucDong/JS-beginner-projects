@@ -164,122 +164,13 @@ function encodedSearchQuery(str) {
     );
 }
 
-previousButton.addEventListener("click", (event) => {
-    if (currentPage === 1) {
-        event.preventDefault();
-    } else {
-        currentPage -= 1;
-        console.log(`Current page: ${currentPage}`);
-     
-        if (!previousButton.id) {
-            getGameData(gameCategoriesUrl);
-            gameCategoriesContainer.textContent = "";
-            renderGameCategoriesList();
-        } else {
-            gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games?page=${currentPage}&limit=10&genres=${previousButton.id.slice(0, previousButton.id.length - 1)}`;
-            console.log(gamesOfACategoryUrl);
-            renderStructureForGamesOfACategory();
-            renderGameCategoriesSelection();
-            renderSearchResultsCards(gamesOfACategoryUrl);      
-        }
-    }
-});
-
-nextButton.addEventListener("click", (event) => {
-    if (currentPage === 4) {
-        event.preventDefault();
-    } else {
-        currentPage += 1;
-        console.log(`Current page: ${currentPage}`);
-
-        if (!nextButton.id) {
-            getGameData(gameCategoriesUrl);
-            gameCategoriesContainer.textContent = "";
-            renderGameCategoriesList();
-        } else {
-            gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games?page=${currentPage}&limit=10&genres=${nextButton.id.slice(0, previousButton.id.length - 1)}`;
-            console.log(gamesOfACategoryUrl);
-            renderStructureForGamesOfACategory();
-            renderGameCategoriesSelection();
-            renderSearchResultsCards(gamesOfACategoryUrl);      
-        }
-    }
-});
-
-async function renderGameCategoriesSelection() {
-    gameCategoriesUrl = `https://steam-api-mass.onrender.com/genres?page=1&limit=29`;
-    const gameCategoriesList = await getGameData(gameCategoriesUrl);
-
-    let categoriesSelectionEle = document.querySelector("#categories");
-    
-    gameCategoriesList.forEach(category => {
-        categoriesSelectionEle.insertAdjacentHTML("beforeend", `
-            <option value=${encodedSearchQuery(category.name)}>${category.name}</option>
-        `);
-    });
-}
-
 const mainContent = document.querySelector(".main-content");
-
-function renderStructureForGamesOfACategory() {
-    mainContent.textContent = "";
-        
-    mainContent.insertAdjacentHTML("beforeend", `
-        <div id="categories-selection">
-            <h2>Game Categories</h2>
-            <div class="select-and-search">
-                <select name="categories" id="categories" onchange=displayGamesOfCategoryAfterSelection()>
-                        
-                </select>
-            </div>
-        </div>
-
-        <section id="search-results">
-            <h2 class="target-heading">Search Results</h2>
-            <div class="bottom-underline"></div>
-
-            <div class="cards search-results-cards">
-                        
-            </div>
-        </section>
-    `);
-}
-
-async function renderSearchResultsCards(gamesOfACategoryUrl) {
-    let gamesOfACategoryList = await getGameData(gamesOfACategoryUrl);
-    const searchResultsCards = document.querySelector(".search-results-cards");
-
-    gamesOfACategoryList.forEach(game => {
-        searchResultsCards.insertAdjacentHTML("beforeend", `
-            <div class="card search-result-card">
-                <div class="card-content">
-                    <div class="card-header featured-deal-header">
-                        <img src=${game.header_image} alt=${game.name} >
-                    </div>
-                    <div class="card-body featured-deal-body">
-                        <h3>${game.name}</h3>
-                        <div class="price-and-button">
-                            <p>$${game.price}</p>
-                            <button class="add-to-cart-btn">Add to cart</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `);
-    });
-}
 
 let gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games`;
 
-async function displayGamesOfACategory(category) {
-    gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games?page=${currentPage}&limit=10&genres=${category}`;
-
-    previousButton.id = `${category}1`;
-    nextButton.id = `${category}2`;
-    
-    renderStructureForGamesOfACategory();
-    renderGameCategoriesSelection();
-    renderSearchResultsCards(gamesOfACategoryUrl);
+function displayGamesOfACategory(category) {
+    sessionStorage.setItem("Game Category", category);
+    window.location.href = window.location.origin + "/results.html";
 }
 
 const searchBar =  document.querySelector(".search-bar");
@@ -288,22 +179,41 @@ searchBar.addEventListener("keyup", async (event) => {
     if (event.key === "Enter") {
         let encodedSearchBarValue = encodedSearchQuery(searchBar.value.trim());
         let searchBarUrl = `https://steam-api-mass.onrender.com/games?q=${encodedSearchBarValue}`;
-        renderGameCategoriesSelection();
-        renderStructureForGamesOfACategory();
-        renderSearchResultsCards(searchBarUrl);
+        sessionStorage.setItem("Search Bar Url", searchBarUrl);
+        window.location.href = window.location.origin + "/results.html";
     }
 });
 
 
-function displayGamesOfCategoryAfterSelection() {
-    const gameGenreSelectionEle = document.querySelector("#categories");
-    gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games?page=${currentPage}&limit=10&genres=${gameGenreSelectionEle.value}`;
-    previousButton.id = `${gameGenreSelectionEle.value}1`;
-    nextButton.id = `${gameGenreSelectionEle.value}2`;
-    renderGameCategoriesSelection();
-    renderStructureForGamesOfACategory();
-    renderSearchResultsCards(gamesOfACategoryUrl);
-}
+previousButton.addEventListener("click", async (event) => {
+    if (currentPage === 1) {
+        event.preventDefault();
+    } else {
+        currentPage -= 1;
+     
+        gameCategoriesUrl = `https://steam-api-mass.onrender.com/genres?page=${currentPage}&limit=${limitedItemsPerPage}`;
+        gameCategoriesContainer.textContent = "";
+        renderGameCategoriesList(await getGameData(gameCategoriesUrl));
+    }
+});
+
+nextButton.addEventListener("click", async (event) => {
+    if (currentPage === 4) {
+        event.preventDefault();
+    } else {
+        currentPage += 1;
+        gameCategoriesUrl = `https://steam-api-mass.onrender.com/genres?page=${currentPage}&limit=${limitedItemsPerPage}`;
+
+        gameCategoriesContainer.textContent = "";
+        renderGameCategoriesList(await getGameData(gameCategoriesUrl));
+    }
+});
+
+const allGamesNavItem = document.querySelector(".all-games");
+allGamesNavItem.addEventListener("click", function() {
+    sessionStorage.setItem("All Games Url", "https://steam-api-mass.onrender.com/games");
+    wwindow.location.href = window.location.origin + "/results.html";
+}); 
 
 async function main() {
     // call API list game

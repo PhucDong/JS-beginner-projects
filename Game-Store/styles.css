@@ -77,10 +77,17 @@ header .container {
 
 header .container h1 {
     font-size: 1.2rem;
+    cursor: pointer;
+}
+
+header .nav-logo a {
+    display: inline-block;
+    color: var(--second-text-color);
 }
 
 .header-social-icons i {
     font-size: 22px;
+    cursor: pointer;
 }
 
 .header-social-icons i:first-child {
@@ -233,17 +240,17 @@ ul li a {
 
 .card-header img {
     width: 100%;
-    height: auto;
+    height: 100%;
     display: block;
+    object-fit: cover;
 }
 
 .card-body {
-    margin: 8px;
+    padding: 8px;
     word-wrap: break-word;
-    height: 60px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    gap: 12px;
 }
 
 .card-body h3 {
@@ -255,7 +262,6 @@ ul li a {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 16px;
 }
 
 .price-and-button p {
@@ -268,6 +274,7 @@ ul li a {
     color: #fff;
     font-size: 8px;
     padding: 4px 8px;
+    cursor: pointer;
 }
 
 .button-group {
@@ -506,16 +513,11 @@ footer ul a {
     }
     
     .card-body {
-        margin: 12px;
-        height: 80px;
+        padding: 12px;
     }
     
     .card-body h3 {
         font-size: 14px;
-    }
-    
-    .price-and-button {
-        margin-top: 22px;
     }
 
     .price-and-button p {
@@ -670,16 +672,11 @@ footer ul a {
     }
     
     .card-body {
-        margin: 16px;
-        height: 100px;
+        padding: 16px;
     }
     
     .card-body h3 {
         font-size: 1.15rem;
-    }
-    
-    .price-and-button {
-        margin-top: 30px;
     }
 
     .price-and-button p {
@@ -812,16 +809,11 @@ footer ul a {
     }
     
     .card-body {
-        margin: 18px;
-        height: 130px;
+        padding: 18px;
     }
 
     .card-body h3 {
         font-size: 1.3rem;
-    }
-    
-    .price-and-button {
-        margin-top: 40px;
     }
 
     .price-and-button p {
