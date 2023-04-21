@@ -139,7 +139,6 @@ function renderGamesAfterSearchingInHomePage() {
 async function renderAllGames() {
     const allGamesUrl = sessionStorage.getItem("All Games Url");
     renderGamesOfACategory(allGamesUrl);
-    // sessionStorage.clear();
 }
 
 function renderGamesAfterClickingACategoryCard() {
@@ -148,6 +147,11 @@ function renderGamesAfterClickingACategoryCard() {
     searchResultsCards.textContent = "";
     renderGamesOfACategory(gamesOfACategoryUrl);
 }
+
+const allGamesNavItem = document.querySelector(".all-games");
+allGamesNavItem.addEventListener("click", function() {
+    renderAllGames();
+}); 
 
 function main() {
     renderGameCategoriesSelection();
@@ -164,7 +168,7 @@ function main() {
     // render all games
     renderAllGames();
 
-    // sessionStorage.clear();
+    sessionStorage.clear();
 }
 
 main();

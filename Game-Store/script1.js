@@ -178,7 +178,7 @@ const searchBar =  document.querySelector(".search-bar");
 searchBar.addEventListener("keyup", async (event) => {
     if (event.key === "Enter") {
         let encodedSearchBarValue = encodedSearchQuery(searchBar.value.trim());
-        let searchBarUrl = `https://steam-api-mass.onrender.com/games?q=${encodedSearchBarValue}`;
+        let searchBarUrl = `https://steam-api-mass.onrender.com/games?q=${encodedSearchBarValue}&page=${currentPage}&limit=10`;
         sessionStorage.setItem("Search Bar Url", searchBarUrl);
         window.location.href = window.location.origin + "/results.html";
     }
