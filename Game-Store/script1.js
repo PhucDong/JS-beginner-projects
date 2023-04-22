@@ -18,7 +18,7 @@ async function renderFeaturedGames(featuredGamesList) {
             <div class="card featured-deal-card" id=${featuredGame.appid} onclick=displayGameDetails(${featuredGame.appid})>
                 <div class="card-content">
                     <div class="card-header featured-deal-header">
-                        <img src=${featuredGame.header_image} alt=${featuredGame.name}>
+                        <img src=${featuredGame.header_image} />
                     </div>
                     <div class="card-body featured-deal-body">
                         <h3>${featuredGame.name}</h3>
@@ -47,7 +47,7 @@ function renderDetailedGameHeader(gameDetails) {
     
     mainWrapper.insertAdjacentHTML("beforeend", `
         <section class="hero-section detailed-hero-section">
-            <img src=${gameDetails.background}  alt=${gameDetails.name} />
+            <img src=${gameDetails.background} />
         </section>
 
         <div class="container detailed-main-content">
@@ -209,10 +209,12 @@ nextButton.addEventListener("click", async (event) => {
     }
 });
 
-const allGamesNavItem = document.querySelector(".all-games");
-allGamesNavItem.addEventListener("click", function() {
-    sessionStorage.setItem("All Games Url", "https://steam-api-mass.onrender.com/games");
-    wwindow.location.href = window.location.origin + "/results.html";
+const allGamesNavItems = document.querySelectorAll(".all-games");
+allGamesNavItems.forEach(function(navItem) {
+    navItem.addEventListener("click", () => {
+        sessionStorage.setItem("All Games Url", "https://steam-api-mass.onrender.com/games");
+        window.location.href = window.location.origin + "/results.html";
+    });
 }); 
 
 async function main() {

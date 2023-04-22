@@ -39,7 +39,7 @@ async function renderGamesOfACategory(gamesOfACategoryUrl) {
             <div class="card search-result-card">
                 <div class="card-content">
                     <div class="card-header featured-deal-header">
-                        <img src=${game.header_image} alt=${game.name} >
+                        <img src=${game.header_image} />
                     </div>
                     <div class="card-body featured-deal-body">
                         <h3>${game.name}</h3>
@@ -136,9 +136,11 @@ function renderGamesAfterSearchingInHomePage() {
     renderGamesOfACategory(searchBarUrl);
 }
 
+const allGamesUrl = sessionStorage.getItem("All Games Url");
 async function renderAllGames() {
-    const allGamesUrl = sessionStorage.getItem("All Games Url");
+    
     renderGamesOfACategory(allGamesUrl);
+    sessionStorage.removeItem("All Games Url");
 }
 
 function renderGamesAfterClickingACategoryCard() {
@@ -148,10 +150,13 @@ function renderGamesAfterClickingACategoryCard() {
     renderGamesOfACategory(gamesOfACategoryUrl);
 }
 
-const allGamesNavItem = document.querySelector(".all-games");
-allGamesNavItem.addEventListener("click", function() {
-    renderAllGames();
-}); 
+const allGamesNavItems = document.querySelectorAll(".all-games");
+allGamesNavItems.forEach(function(navItem) {
+    navItem.addEventListener("click", () => {
+        allGamesUrl = "https://steam-api-mass.onrender.com/games";
+        renderGamesOfACategory(allGamesUrl);
+    });
+});
 
 function main() {
     renderGameCategoriesSelection();
@@ -168,7 +173,7 @@ function main() {
     // render all games
     renderAllGames();
 
-    sessionStorage.clear();
+    // sessionStorage.clear();
 }
 
 main();
