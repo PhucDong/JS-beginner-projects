@@ -24,7 +24,6 @@ async function renderFeaturedGames(featuredGamesList) {
                         <h3>${featuredGame.name}</h3>
                         <div class="price-and-button">
                             <p>$${featuredGame.price}</p>
-                            <button class="add-to-cart-btn">Add to cart</button>
                         </div>
                     </div>
                 </div>
@@ -170,6 +169,7 @@ let gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games`;
 
 function displayGamesOfACategory(category) {
     sessionStorage.setItem("Game Category", category);
+    sessionStorage.setItem("Category Card Status", "Clicked");
     window.location.href = window.location.origin + "/results.html";
 }
 
@@ -180,6 +180,7 @@ searchBar.addEventListener("keyup", async (event) => {
         let encodedSearchBarValue = encodedSearchQuery(searchBar.value.trim());
         let searchBarUrl = `https://steam-api-mass.onrender.com/games?q=${encodedSearchBarValue}&page=${currentPage}&limit=10`;
         sessionStorage.setItem("Search Bar Url", searchBarUrl);
+        sessionStorage.setItem("Search Value", encodedSearchBarValue);
         window.location.href = window.location.origin + "/results.html";
     }
 });

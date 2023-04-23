@@ -32,3 +32,4 @@ This is a beginner's project that tests learners their skills in JavaScript and 
 1. Users see the website with a clean UI design
 2. Users can view the website in an IphoneX screensize (done)
 3. Users can see a list of games from the API in a list layout
+4. Add "Add to cart" button. Code: <button class="add-to-cart-btn">Add to cart</button>

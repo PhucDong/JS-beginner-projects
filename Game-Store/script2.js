@@ -1,3 +1,11 @@
+// Toggle the navbar on/off
+const hamburgerBars = document.querySelector(".fa-bars");
+const navBar = document.querySelector(".header-navbar");
+
+hamburgerBars.addEventListener("click", () => {
+    navBar.classList.toggle("header-navbar-appear");
+});
+
 let currentPage = 1;
 const limitedItemsPerPage = 9;
 let gameCategoriesUrl = `https://steam-api-mass.onrender.com/genres?page=${currentPage}&limit=${limitedItemsPerPage}`;
@@ -30,9 +38,9 @@ const previousButton = document.querySelector(".previous-btn");
 const searchResultsCards = document.querySelector(".search-results-cards");
 
 async function renderGamesOfACategory(gamesOfACategoryUrl) {
-    console.log(33, gamesOfACategoryUrl);
+    // console.log(41, gamesOfACategoryUrl);
     let gamesOfACategoryList = await getGameData(gamesOfACategoryUrl);
-    console.log(`Number of games in a genre: ${gamesOfACategoryList.length}`);
+    // console.log(`Number of games in a genre: ${gamesOfACategoryList.length}`);
 
     gamesOfACategoryList.forEach(game => {
         searchResultsCards.insertAdjacentHTML("beforeend", `
@@ -45,7 +53,6 @@ async function renderGamesOfACategory(gamesOfACategoryUrl) {
                         <h3>${game.name}</h3>
                         <div class="price-and-button">
                             <p>$${game.price}</p>
-                            <button class="add-to-cart-btn">Add to cart</button>
                         </div>
                     </div>
                 </div>
@@ -71,6 +78,7 @@ function renderGamesOfCategoryAfterSelection() {
         gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games?page=${currentPage}&limit=10&genres=${gameGenreSelectionEle.value}`;
         searchResultsCards.textContent = "";
         renderGamesOfACategory(gamesOfACategoryUrl);
+        // console.log(74, gamesOfACategoryUrl);
         previousButton.id = gameGenreSelectionEle.value;
         nextButton.id = gameGenreSelectionEle.value;
     });
@@ -83,16 +91,16 @@ previousButton.addEventListener("click", (event) => {
         event.preventDefault();
     } else {
         currentPage -= 1;
-        console.log(81, currentPage);
+        // console.log(94, currentPage);
      
         if(!previousButton.id) {
             gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games?page=${currentPage}&limit=10&genres=${gameCategory}`;
-            console.log(85, gamesOfACategoryUrl);
+            // console.log(98, gamesOfACategoryUrl);
             searchResultsCards.textContent = "";
             renderGamesOfACategory(gamesOfACategoryUrl);
         } else {
             gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games?page=${currentPage}&limit=10&genres=${previousButton.id}`;
-            console.log(90, gamesOfACategoryUrl);
+            // console.log(103, gamesOfACategoryUrl);
             searchResultsCards.textContent = "";
             renderGamesOfACategory(gamesOfACategoryUrl);
         }
@@ -104,16 +112,16 @@ nextButton.addEventListener("click", (event) => {
         event.preventDefault();
     } else {
         currentPage += 1;
-        console.log(101, currentPage);
+        // console.log(115, currentPage);
      
         if(!previousButton.id) {
             gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games?page=${currentPage}&limit=10&genres=${gameCategory}`;
-            console.log(105, gamesOfACategoryUrl);
+            // console.log(119, gamesOfACategoryUrl);
             searchResultsCards.textContent = "";
             renderGamesOfACategory(gamesOfACategoryUrl);
         } else {
             gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games?page=${currentPage}&limit=10&genres=${nextButton.id}`;
-            console.log(110, gamesOfACategoryUrl);
+            // console.log(124, gamesOfACategoryUrl);
             searchResultsCards.textContent = "";
             renderGamesOfACategory(gamesOfACategoryUrl);
         } 
@@ -134,27 +142,31 @@ searchBar.addEventListener("keyup", async (event) => {
 function renderGamesAfterSearchingInHomePage() {
     const searchBarUrl = sessionStorage.getItem("Search Bar Url");
     renderGamesOfACategory(searchBarUrl);
+    sessionStorage.removeItem("Search Bar Url");
+    sessionStorage.removeItem("Search Value");
 }
 
-const allGamesUrl = sessionStorage.getItem("All Games Url");
 async function renderAllGames() {
-    
+    let allGamesUrl = sessionStorage.getItem("All Games Url");
     renderGamesOfACategory(allGamesUrl);
     sessionStorage.removeItem("All Games Url");
 }
 
 function renderGamesAfterClickingACategoryCard() {
     gamesOfACategoryUrl = `https://steam-api-mass.onrender.com/games?page=${currentPage}&limit=10&genres=${gameCategory}`;
-    console.log(147, gamesOfACategoryUrl);
+    // console.log(157, gamesOfACategoryUrl);
     searchResultsCards.textContent = "";
     renderGamesOfACategory(gamesOfACategoryUrl);
+    sessionStorage.removeItem("Game Category");
+    sessionStorage.removeItem("Category Card Status");
 }
 
 const allGamesNavItems = document.querySelectorAll(".all-games");
 allGamesNavItems.forEach(function(navItem) {
     navItem.addEventListener("click", () => {
-        allGamesUrl = "https://steam-api-mass.onrender.com/games";
-        renderGamesOfACategory(allGamesUrl);
+        sessionStorage.setItem("All Games Url", "https://steam-api-mass.onrender.com/games");
+        searchResultsCards.textContent = "";
+        renderAllGames();
     });
 });
 
@@ -162,18 +174,22 @@ function main() {
     renderGameCategoriesSelection();
 
     // render data of games of a category
-    renderGamesAfterClickingACategoryCard();
+    if (sessionStorage.getItem("Category Card Status")) {
+        renderGamesAfterClickingACategoryCard();
+    }
 
     // render that data
     renderGamesOfCategoryAfterSelection();
 
     // render games after searching in the home page
-    renderGamesAfterSearchingInHomePage();
+    if (sessionStorage.getItem("Search Value")) {
+        renderGamesAfterSearchingInHomePage();
+    }
 
     // render all games
-    renderAllGames();
-
-    // sessionStorage.clear();
+    if (sessionStorage.getItem("All Games Url")) {
+        renderAllGames();
+    }
 }
 
 main();
