@@ -15,7 +15,7 @@ async function renderFeaturedGames(featuredGamesList) {
 
     featuredGamesList.forEach(featuredGame => {
         featuredGamesCards.insertAdjacentHTML("beforeend",`
-            <div class="card featured-deal-card" id=${featuredGame.appid} onclick=displayGameDetails(${featuredGame.appid})>
+            <div class="card featured-deal-card" onclick=displayGameDetails(${featuredGame.appid})>
                 <div class="card-content">
                     <div class="card-header featured-deal-header">
                         <img src=${featuredGame.header_image} />
